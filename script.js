@@ -1,30 +1,52 @@
-var rect = document.querySelector(".center");
+var timer = 60; 
+var score = 0;
+var hitrn = 0;
 
-rect.addEventListener("mousemove", function(details){
-    var rectangleLocation = rect.getBoundingClientRect();
-    var insiderectValue = details.clientX - rectangleLocation.left; 
+function increaseScore(){
+    score += 10;
+    document.querySelector("#scoreval").textContent = score;
+}
 
-    if(insiderectValue<rectangleLocation.width/2){
-        var redColor = gsap.utils.mapRange(0, rectangleLocation.width/2, 255, 0, insiderectValue);
-        gsap.to(rect,{
-            backgroundColor:`rgb(${redColor}, 0, 0)`,
-            ease:Power4,
-        });
+function getNewHit(){
+    hitrn = Math.floor(Math.random()*10);
+    document.querySelector("#hitval").textContent = hitrn;
+}
 
+function makeBubble(){
+
+var clutter = "";
+
+for(var i=1; i<=70; i++){
+    var n = Math.floor(Math.random()*10);
+    clutter += `<div class="bubble">${n}</div>`;
+}
+
+document.querySelector("#pbtm").innerHTML = clutter;
+
+}
+
+function runTimer(){
+    var timerint = setInterval(function(){
+        if(timer>0){
+        timer--;
+        document.querySelector("#timerval").textContent = timer;
     }
+    else{
+        clearInterval(timerint);
+        document.querySelector("#pbtm").innerHTML = `<h1>Game Over! </h1>`
+    }
+    }, 1000)
+}
 
-    else
-    {
-        var blueColor = gsap.utils.mapRange(rectangleLocation.width/2, rectangleLocation.width, 0, 255, insiderectValue);
-        gsap.to(rect,{
-            backgroundColor:`rgb(0, 0, ${blueColor})`,
-            ease:Power4,
-        });
+document.querySelector("#pbtm").addEventListener("click", function(dets){
+    var clickednum = Number(dets.target.textContent);
+    if(clickednum === hitrn){
+        increaseScore();
+        makeBubble();
+        getNewHit();
     }
 })
 
-rect.addEventListener("mouseleave", function(){
-    gsap.to(rect,{
-        backgroundColor: "white",
-    })
-})
+runTimer();
+makeBubble();
+getNewHit();
